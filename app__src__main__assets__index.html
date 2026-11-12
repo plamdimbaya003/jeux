@@ -1,0 +1,1544 @@
+<title>Îles et Ponts</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{--bg:#fdf1dc;--fg:#1b2a4a;--muted:#6b6f80;--accent:#ff8a1f;--ok:#17a673;--bad:#f0443a;--btn:#1f4e9c;--btnfg:#ffffff;--panel:#ffffff;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#15191e;--fg:#eef1f4;--muted:#9aa4ad;--accent:#f7b75c;--ok:#4cc08a;--bad:#ff7a63;--btn:#3d7fd6;--btnfg:#ffffff;--panel:#222a33;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#15191e;--fg:#eef1f4;--muted:#9aa4ad;--accent:#f7b75c;--ok:#4cc08a;--bad:#ff7a63;--btn:#3d7fd6;--btnfg:#ffffff;--panel:#222a33;color-scheme:dark}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px;min-height:100%;box-sizing:border-box}
+[hidden]{display:none!important}
+.screen{width:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:10px;box-sizing:border-box}
+.bar{width:100%;display:flex;align-items:center;gap:10px}
+.bar .title{flex:1;min-width:0}
+.bar h2{margin:0;font-size:18px}
+h1{font-size:22px;margin:4px 0 0;text-align:center}
+.sub{color:var(--muted);margin:0;text-align:center;font-size:13px}
+.logo{width:180px;max-width:70%;height:auto;margin-top:8px}
+.menu{width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px;margin-top:10px}
+button{font:inherit;border:0;border-radius:999px;padding:12px 18px;background:var(--btn);color:var(--btnfg);cursor:pointer}
+button.big{font-weight:700;font-size:16px}
+button.ghost{background:transparent;color:var(--fg);box-shadow:inset 0 0 0 1px var(--muted)}
+button.icon{padding:8px 12px;font-size:18px}
+button:disabled{opacity:.35;cursor:default}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chapter{width:100%}
+.chapter h3{margin:14px 0 8px;font-size:15px}
+.chapter.locked h3{color:var(--muted)}
+.lvlgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.lvl{border-radius:12px;padding:12px 0;background:var(--panel);color:var(--fg);box-shadow:inset 0 0 0 1px var(--muted);font-weight:700}
+.lvl.done{background:var(--ok);color:#fff;box-shadow:none}
+.lvl:disabled{opacity:.35}
+#wrap{width:100%;overflow:hidden;border-radius:10px}
+#stage canvas{display:block;margin:0 auto;border-radius:10px;touch-action:none;cursor:pointer}
+#msg{min-height:22px;text-align:center;font-weight:600}
+.lives{display:flex;gap:6px;justify-content:center;font-size:24px;color:var(--bad);line-height:1}
+.lives .off{opacity:.25}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.help{color:var(--muted);font-size:13px;text-align:center;max-width:420px}
+.panel{width:100%;background:var(--panel);border-radius:14px;padding:14px 16px;box-sizing:border-box}
+.panel label{display:flex;justify-content:space-between;align-items:center;padding:10px 0;gap:10px}
+select{font:inherit;padding:6px 10px;border-radius:8px;background:var(--bg);color:var(--fg);border:1px solid var(--muted)}
+.hud{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hud .lives{justify-content:flex-start;font-size:22px}
+.progbar{flex:1;max-width:220px;height:8px;border-radius:99px;background:var(--panel);overflow:hidden;box-shadow:inset 0 0 0 1px var(--muted)}
+#progfill{height:100%;width:0;background:var(--ok);transition:width .4s ease}
+.win{width:100%;max-width:420px;background:var(--panel);border-radius:16px;padding:14px 16px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.win:not([hidden]){animation:pop .35s ease-out}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:none;opacity:1}}
+.stars{font-size:40px;line-height:1.1;color:#f2c46d;letter-spacing:6px;text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.stars .off{color:var(--muted);opacity:.5}
+.winmsg{margin:0;font-weight:700;font-size:17px;text-align:center}
+.win .row{margin-top:6px}
+.ic{width:20px;height:20px;vertical-align:middle;display:inline-block}
+button .ic{margin:0 2px}
+.tut{position:fixed;inset:0;background:rgba(10,30,50,.6);display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;z-index:50}
+.tut-card{background:var(--panel);border-radius:18px;padding:18px 18px 14px;max-width:360px;width:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,.3)}
+.tut-art svg{width:240px;max-width:100%;height:auto;display:block}
+.tut-text{margin:0;font-size:16px;font-weight:600;min-height:3em}
+.dots{display:flex;gap:2px}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--muted);opacity:.35;margin:0 4px}
+.dots span.on{opacity:1;background:var(--accent)}
+/* Accueil : bloc titre avec bandes rouge, jaune, bleu */
+.hero{width:100%;border-radius:24px;padding:22px 18px 18px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,rgba(6,38,74,.35) 0%,rgba(6,38,74,.8) 100%),url(pont-photo.jpg) center 40%/cover no-repeat,#2aa7ea;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(6,38,74,.25)}
+.hero .logo{width:170px;max-width:60%;margin:0;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.hero h1{color:#fff;font-size:26px;margin:6px 0 0;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+.hero .sub{color:#e6f3ff;font-size:14px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.hero .ghost{color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.85)}
+.stripes{display:flex;width:120px;height:6px;border-radius:99px;overflow:hidden;margin-top:10px}
+.stripes span{flex:1}
+.stripes .r{background:#ce1126}.stripes .y{background:#f7d618}.stripes .b{background:#007fff}
+.hero .menu{margin-top:14px}
+.hero .big{display:flex;align-items:center;justify-content:center;gap:8px}
+.ccard{width:100%;background:var(--panel);border-radius:16px;overflow:hidden;margin-top:12px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.ccard .art{position:relative;height:96px}
+.ccard .art svg{width:100%;height:100%;display:block}
+.ccard .lock{position:absolute;inset:0;background:rgba(20,30,45,.5);display:flex;align-items:center;justify-content:center;color:#fff}
+.ccard.locked .body h3{color:var(--muted)}
+.ccard .body{padding:10px 14px 14px}
+.ccard h3{margin:0 0 2px;font-size:16px}
+.ccard .meta{color:var(--muted);font-size:13px;margin-bottom:10px}
+.ccard .lvlgrid{margin-top:4px}
+.tap{animation:tap 1.4s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes tap{0%{transform:scale(.6);opacity:.9}100%{transform:scale(1.8);opacity:0}}
+</style>
+
+<section id="scr-home" class="screen">
+  <div class="hero">
+  <svg class="logo" viewBox="0 0 160 100" aria-hidden="true">
+    <rect x="0" y="0" width="160" height="100" rx="22" fill="#1d6aad"/>
+    <path d="M0 70 Q80 58 160 70 V100 H0Z" fill="#3b8fd1" opacity=".6"/>
+    <circle cx="140" cy="18" r="8" fill="#f7d618"/>
+    <ellipse cx="34" cy="70" rx="22" ry="10" fill="#9ccf76"/>
+    <ellipse cx="126" cy="70" rx="22" ry="10" fill="#9ccf76"/>
+    <path d="M34 62 Q80 14 126 62" fill="none" stroke="#c4452f" stroke-width="5" stroke-linecap="round"/>
+    <line x1="62" y1="36" x2="62" y2="62" stroke="#a83a28" stroke-width="4"/>
+    <line x1="98" y1="36" x2="98" y2="62" stroke="#a83a28" stroke-width="4"/>
+  </svg>
+  <h1 data-i18n="title"></h1>
+  <p class="sub" data-i18n="tagline"></p>
+  <div class="stripes" aria-hidden="true"><span class="r"></span><span class="y"></span><span class="b"></span></div>
+  <div class="menu">
+    <button class="big" id="btn-play"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span data-i18n="play"></span></button>
+    <button class="big ghost" data-go="scr-levels" data-i18n="levels"></button>
+    <button class="big ghost" data-go="scr-settings" data-i18n="settings"></button>
+  </div>
+  </div>
+</section>
+
+<section id="scr-levels" class="screen" hidden>
+  <div class="bar"><button class="ghost icon" data-go="scr-home" aria-label="Retour">←</button><h2 data-i18n="levels"></h2></div>
+  <div id="chapters" style="width:100%"></div>
+</section>
+
+<section id="scr-settings" class="screen" hidden>
+  <div class="bar"><button class="ghost icon" data-go="scr-home" aria-label="Retour">←</button><h2 data-i18n="settings"></h2></div>
+  <div class="panel">
+    <label><span data-i18n="lang"></span><select id="sel-lang"><option value="fr">Français</option><option value="en">English</option></select></label>
+    <label><span data-i18n="sound"></span><input type="checkbox" id="opt-sound"></label>
+    <label><span data-i18n="music"></span><input type="checkbox" id="opt-music"></label>
+    <label><span data-i18n="vib"></span><input type="checkbox" id="opt-vib"></label>
+    <label><span data-i18n="reset"></span><button class="ghost" id="reset" data-i18n="resetBtn"></button></label>
+  </div>
+</section>
+
+<section id="scr-game" class="screen" hidden>
+  <div class="bar">
+    <button class="ghost icon" id="back-game" aria-label="Retour"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="title"><div class="sub" id="lvl"></div><h2 id="chaptitle"></h2></div>
+  </div>
+  <div class="hud">
+    <div class="lives" id="lives" aria-label="Vies"></div>
+    <div class="progbar" aria-hidden="true"><div id="progfill"></div></div>
+  </div>
+  <div id="wrap"><div id="stage"></div></div>
+  <div id="msg" role="status" aria-live="polite"></div>
+  <div id="win" class="win" hidden>
+    <div class="stars" id="stars" aria-label="Étoiles"></div>
+    <p class="winmsg" id="winmsg"></p>
+    <p class="sub" id="winlives"></p>
+    <p class="sub" id="wintime"></p>
+    <div class="row">
+      <button class="ghost" id="win-retry"></button>
+      <button class="big" id="win-next"></button>
+    </div>
+  </div>
+  <div class="row">
+    <button class="ghost icon" id="zout" aria-label="Dézoomer"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    <button class="ghost icon" id="zin" aria-label="Zoomer"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    <button class="ghost" id="hint"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg><span data-i18n="hint"></span></button>
+    <button id="next" disabled><span id="next-txt"></span> <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <p class="help" data-i18n="help"></p>
+</section>
+
+<div id="tut" class="tut" hidden>
+  <div class="tut-card" role="dialog" aria-modal="true">
+    <div class="tut-art" id="tut-art"></div>
+    <p class="tut-text" id="tut-text"></p>
+    <div class="dots" id="tut-dots"></div>
+    <div class="row">
+      <button class="ghost" id="tut-skip"></button>
+      <button class="big" id="tut-next"></button>
+    </div>
+  </div>
+</div>
+
+<script src="three.min.js"></script>
+<script>
+// ---------- Données ----------
+const TOTAL = 60;
+const MAX_LIVES = 5;
+const CHAPTERS = [
+  {fr:'Chapitre 1 : Lingala',  en:'Chapter 1: Lingala'},
+  {fr:'Chapitre 2 : Tshiluba', en:'Chapter 2: Tshiluba'},
+  {fr:'Chapitre 3 : Kikongo',  en:'Chapter 3: Kikongo'},
+  {fr:'Chapitre 4 : Swahili',  en:'Chapter 4: Swahili'}
+];
+// Musique de chaque chapitre : mets ici l'adresse de ton fichier audio (ex. 'music/ch1.mp3').
+const MUSIC = ['', '', '', ''];
+const CITIES = ['Kinshasa','Lubumbashi','Kolwezi','Likasi','Mbuji-Mayi','Kananga','Ilebo','Tshikapa','Mbandaka','Kisangani','Goma','Bukavu','Butembo','Beni','Kindu','Kalemie','Uvira','Baraka','Bukama','Pweto','Kabinda','Dundo','Luena','Luebo','Kikwit','Matadi','Boma','Tshela','Moanda','Muanda','Bandundu','Inongo','Kenge','Kwango','Idiofa','Gungu','Masimanimba','Vanga','Panzi','Feshi','Bolobo','Nioki','Basankusu','Gemena','Lisala','Bongandanga','Bumba','Isangi','Yalifafi','Yakoma','Gbadolite','Molegbe','Libenge','Zongo','Aketi','Buta','Doruma','Ango','Businga','Poko','Ponthierville','Wangata','Banga','Djolu','Lodja','Sankuru','Lusambo','Pania Mutombo','Katako-Kombe','Kabongo','Mweka','Dibaya','Tshilenge','Dilolo','Kahemba','Kamina','Kambove','Manono','Malemba-Nkulu','Lualaba','Sandoa','Kabalo','Ankoro','Nyunzu','Kongolo','Lubao','Fizi','Shabunda','Kalehe','Walungu','Masisi','Rutshuru','Virunga','Rwampara','Tumba','Watsa','Faradje','Pangi','Niangara','Dungu'];
+// Scènes inspirées des images de villes
+const SCENES = {
+  skyline: ['Kinshasa','Lubumbashi','Matadi'],
+  volcano: ['Goma'],
+  lake: ['Kalemie','Uvira','Muanda'],
+  river: ['Kisangani','Mbandaka','Ilebo','Isangi','Yakoma'],
+  tower: ['Mbuji-Mayi','Kikwit','Kabongo']
+};
+
+const I18N = {
+  fr:{title:'Îles et Ponts', tagline:'Relie les villes de la RDC, pont après pont.', play:'Jouer', levels:'Chapitres', settings:'Réglages',
+      lang:'Langue', sound:'Effets sonores', music:'Musique', vib:'Vibration', reset:'Progression', resetBtn:'Réinitialiser', confirm:'Confirmer',
+      level:'Niveau', of:'sur', hint:'Indice', next:'Niveau suivant', done:'Terminé', locked:'Verrouillé', lockedHint:'Termine le chapitre précédent pour le débloquer.',
+      help:'Touche une ville, puis une autre alignée avec elle pour tracer ou changer un pont. Chaque ville doit avoir exactement le nombre de ponts indiqué, et toutes les villes doivent être reliées. Les ponts ne peuvent pas se croiser. Une fois les îles reliées, touche la grande ville en bas pour y poser le dernier pont, depuis l\'île la plus basse.',
+      won:'Bravo, niveau terminé !', allDone:'Tu as fini tous les niveaux !', pick:'Choisis deux villes alignées.',
+      blocked:'Une autre ville se trouve entre ces deux villes.', cross:'Ce pont croiserait un autre pont.',
+      hinted:'Un pont a été placé pour toi.', right:'Tous les ponts sont déjà justes.',
+      lostLife:'Erreur : une vie perdue.', levelReset:'Plus de vies : le niveau recommence.', error:'Trop de ponts sur cette ville : une vie perdue.'},
+  en:{title:'Islands and Bridges', tagline:'Connect the cities of the DRC, bridge by bridge.', play:'Play', levels:'Chapters', settings:'Settings',
+      lang:'Language', sound:'Sound effects', music:'Music', vib:'Vibration', reset:'Progress', resetBtn:'Reset', confirm:'Confirm',
+      level:'Level', of:'of', hint:'Hint', next:'Next level', done:'Finished', locked:'Locked', lockedHint:'Finish the previous chapter to unlock it.',
+      help:'Tap a city, then another city in line with it to draw or change a bridge. Each city needs exactly the number of bridges shown, and all cities must be connected. Bridges cannot cross. Once the islands are connected, tap the big city at the bottom to add the last bridge, from the lowest island.',
+      won:'Well done, level complete!', allDone:'You have finished all the levels!', pick:'Pick two cities in line.',
+      blocked:'Another city is between these two.', cross:'This bridge would cross another bridge.',
+      hinted:'A bridge was placed for you.', right:'All bridges are already correct.',
+      lostLife:'Mistake: one life lost.', levelReset:'Out of lives: the level restarts.', error:'Too many bridges on this city: one life lost.'}
+};
+
+// ---------- État et réglages ----------
+let settings = {lang: (navigator.language || 'fr').startsWith('en') ? 'en' : 'fr', sound:true, music:true, vib:true};
+let progress = 0;
+function loadState(){
+  try {
+    Object.assign(settings, JSON.parse(localStorage.getItem('settings') || '{}'));
+    progress = Math.min(TOTAL-1, Number(localStorage.getItem('progress') || 0) || 0);
+  } catch(e){}
+}
+function saveSettings(){ try { localStorage.setItem('settings', JSON.stringify(settings)); } catch(e){} }
+function saveProgress(){ try { localStorage.setItem('progress', String(progress)); } catch(e){} }
+const t = k => (I18N[settings.lang] && I18N[settings.lang][k]) || I18N.fr[k] || k;
+// Textes de l'écran de fin de niveau
+const WT = {
+  fr: {livesLeft:'Vies restantes', replay:'Rejouer', next:'Niveau suivant', chapters:'Chapitres', time:'Temps'},
+  en: {livesLeft:'Lives left', replay:'Replay', next:'Next level', chapters:'Chapters', time:'Time'}
+};
+const wt = k => (WT[settings.lang] && WT[settings.lang][k]) || WT.fr[k];
+
+// ---------- Niveaux : 4 chapitres de 15 ----------
+function levelSpec(i){
+  const c = Math.floor(i/15), k = i%15;
+  const n = [5,7,9,11][c] + Math.floor(k/5);
+  const d = 0.2 + 0.08*(i/(TOTAL-1));
+  return [n, Math.round(n*n*d)];
+}
+function chapterOf(i){ return Math.floor(i/15); }
+
+// ---------- Son et vibration ----------
+let actx = null;
+function beep(freq, dur, type='sine', vol=0.08, when=0){
+  if (!settings.sound) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const tt = actx.currentTime + when;
+    const o = actx.createOscillator(), gn = actx.createGain();
+    o.type = type; o.frequency.value = freq;
+    gn.gain.setValueAtTime(vol, tt);
+    gn.gain.exponentialRampToValueAtTime(0.0001, tt+dur);
+    o.connect(gn).connect(actx.destination);
+    o.start(tt); o.stop(tt+dur);
+  } catch(e){}
+}
+function vibrate(p){ if (settings.vib && navigator.vibrate) try { navigator.vibrate(p); } catch(e){} }
+// Bruit de bruit filtré (souffle, grincement, éclaboussure)
+function noiseBurst(time, f, q, dur, vol, sweepTo){
+  const ac = audioCtx();
+  const len = Math.floor(ac.sampleRate * dur);
+  const buf = ac.createBuffer(1, len, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i=0; i<len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2);
+  const src = ac.createBufferSource(); src.buffer = buf;
+  const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = q;
+  bp.frequency.setValueAtTime(f, time);
+  if (sweepTo) bp.frequency.exponentialRampToValueAtTime(sweepTo, time + dur);
+  const gn = ac.createGain(); gn.gain.value = vol;
+  src.connect(bp).connect(gn).connect(ac.destination);
+  src.start(time);
+}
+// Éclaboussure d'eau brève quand on touche une ville
+function sfxTap(){
+  if (!settings.sound) return;
+  const t0 = audioCtx().currentTime;
+  noiseBurst(t0, 2500, 0.8, 0.3, 0.3, 400);
+  for (let k=0; k<4; k++) beep(700 + Math.random()*800, 0.06, 'sine', 0.05, 0.05 + k*0.04);
+  vibrate(10);
+}
+// Bruit de chantier quand un pont est posé : deux coups de marteau et un grincement de métal
+// Son de pose : deux petits coups de bois, puis un carillon clair qui monte
+function sfxPlace(){
+  if (!settings.sound) return;
+  beep(420, 0.05, 'triangle', 0.16, 0);
+  beep(630, 0.06, 'triangle', 0.11, 0.09);
+  beep(988, 0.55, 'sine', 0.07, 0.2);
+  beep(1318, 0.65, 'sine', 0.05, 0.32);
+  vibrate(12);
+}
+function sfxWin(){ [784,988,1175,1568,1976].forEach((f,i)=>{ beep(f,0.35,'square',0.06,i*0.09); beep(f*2,0.3,'triangle',0.04,i*0.09); }); vibrate([30,40,30]); }
+function sfxFail(){ beep(220, 0.25, 'sawtooth', 0.08); vibrate([60,40,60]); }
+
+// ---------- Musique originale : piano à la rumba congolaise (générée dans le jeu) ----------
+const audio = new Audio();   // réservé à un fichier audio éventuel (MUSIC)
+audio.loop = true;
+let musicChapter = -1, musicTimer = null, musicOn = false, musicNext = 0, musicStep = 0, noiseBuf = null;
+const KEYS = [0, 2, 5, 7];                              // tonalité de chaque chapitre (demi-tons)
+const CHORDS = [[0,4,7],[5,9,12],[7,11,14],[0,4,7]];    // I - IV - V - I, une mesure chacun
+const MELODY = [0,2,4,7,4,2, 9,7,4,2,4,0, 7,4,5,7,9,7, 4,2,0,-1,0,2];
+const MSTEPS = [0,2,3,5,6,7];                           // temps de la mélodie dans une mesure
+const EIGHTH = 60/96/2;                                 // 96 BPM, croches
+
+function audioCtx(){
+  if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+  if (actx.state === 'suspended') actx.resume();
+  return actx;
+}
+const hz = (base, semi) => base * Math.pow(2, semi/12);
+
+// Note de piano : une attaque vive puis un son qui s'éteint, avec un peu d'harmonique
+function pianoNote(freq, time, dur, vol, type='triangle'){
+  const ac = audioCtx();
+  const o = ac.createOscillator(), o2 = ac.createOscillator();
+  const gn = ac.createGain(), g2 = ac.createGain();
+  o.type = type; o.frequency.value = freq;
+  o2.type = 'sine'; o2.frequency.value = freq*2; g2.gain.value = 0.2;
+  gn.gain.setValueAtTime(0.0001, time);
+  gn.gain.exponentialRampToValueAtTime(vol, time + 0.01);
+  gn.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+  o.connect(gn); o2.connect(g2).connect(gn); gn.connect(ac.destination);
+  o.start(time); o2.start(time);
+  o.stop(time + dur + 0.05); o2.stop(time + dur + 0.05);
+}
+
+// Claves en bois : petit claquement sec, pour le rythme
+function clave(time, f, vol){
+  const ac = audioCtx();
+  if (!noiseBuf) {
+    noiseBuf = ac.createBuffer(1, Math.floor(ac.sampleRate*0.05), ac.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i=0; i<d.length; i++) d[i] = (Math.random()*2-1) * Math.exp(-i/(d.length*0.15));
+  }
+  const src = ac.createBufferSource(); src.buffer = noiseBuf;
+  const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f; bp.Q.value = 10;
+  const gn = ac.createGain(); gn.gain.value = vol;
+  src.connect(bp).connect(gn).connect(ac.destination);
+  src.start(time);
+}
+
+function scheduleStep(step, time, key){
+  const bar = Math.floor(step/8) % 4, s = step % 8, ch = CHORDS[bar];
+  if (s === 0 || s === 4) ch.forEach(m => pianoNote(hz(261.63, key+m), time, 0.7, 0.03));   // accords
+  if (s === 0) pianoNote(hz(130.81, key+ch[0]), time, 0.5, 0.09, 'sine');                   // basse
+  if (s === 4) pianoNote(hz(130.81, key+ch[2]), time, 0.4, 0.07, 'sine');
+  const mi = MSTEPS.indexOf(s);
+  if (mi >= 0) pianoNote(hz(523.25, key + MELODY[bar*6 + mi]), time, 0.55, 0.06);           // mélodie
+  if (s === 0 || s === 3 || s === 6) clave(time, 2400, 0.05);
+}
+
+function tickMusic(key){
+  if (!musicOn) return;
+  const ac = audioCtx();
+  while (musicNext < ac.currentTime + 0.4) {
+    scheduleStep(musicStep, musicNext, key);
+    musicNext += EIGHTH;
+    musicStep++;
+  }
+  musicTimer = setTimeout(() => tickMusic(key), 100);
+}
+
+function startMusic(c){
+  musicOn = true; musicStep = 0;
+  musicNext = audioCtx().currentTime + 0.15;
+  tickMusic(KEYS[c] || 0);
+}
+
+function playMusic(c){
+  musicChapter = c;
+  stopMusic();
+  if (!settings.music) return;
+  if (MUSIC[c]) {
+    try { audio.src = MUSIC[c]; audio.play().catch(()=>{}); } catch(e){}
+    return;
+  }
+  startMusic(c);
+}
+function stopMusic(){
+  musicOn = false;
+  clearTimeout(musicTimer);
+  try { audio.pause(); } catch(e){}
+}
+
+// ---------- Jeu : état ----------
+let g, cur, sel, won, lvl = 0, msgKey = '', lives = MAX_LIVES, mistakes = 0, hintsUsed = 0;
+let pops = {};
+let confetti = null, confettiLife = 0;
+
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shuffled(arr, seed){ const r = mulberry32(seed), a = arr.slice(); for (let k=a.length-1; k>0; k--) { const j = Math.floor(r()*(k+1)); [a[k], a[j]] = [a[j], a[k]]; } return a; }
+
+function gen(n, target, rnd){
+  const occ = Array.from({length:n}, () => Array(n).fill(0));
+  const isl = [], sol = [];
+  const r0 = Math.floor(rnd()*n), c0 = Math.floor(rnd()*n);
+  isl.push({r:r0, c:c0}); occ[r0][c0] = 1;
+  const dirs = [[0,1],[0,-1],[1,0],[-1,0]];
+  let tries = 0;
+  while (isl.length < target && tries++ < 4000) {
+    const ai = Math.floor(rnd()*isl.length), A = isl[ai];
+    const [dr, dc] = dirs[Math.floor(rnd()*4)];
+    const len = 2 + Math.floor(rnd()*3);
+    const tr = A.r + dr*len, tc = A.c + dc*len;
+    if (tr<0 || tc<0 || tr>=n || tc>=n) continue;
+    let ok = true;
+    for (let k=1; k<=len; k++) if (occ[A.r+dr*k][A.c+dc*k]) { ok = false; break; }
+    if (!ok) continue;
+    for (let k=1; k<=len; k++) occ[A.r+dr*k][A.c+dc*k] = 1;
+    isl.push({r:tr, c:tc});
+    sol.push({a:ai, b:isl.length-1, cnt: rnd() < 0.3 ? 2 : 1});
+  }
+  return isl.length < target ? null : {n, isl, sol};
+}
+
+function loadLevel(i){
+  lvl = i;
+  const [n, t0] = levelSpec(i);
+  let gg = null, t = t0;
+  while (!gg && t > 3) {
+    for (let s=0; s<60 && !gg; s++) gg = gen(n, t, mulberry32(i*100003 + s*31 + t));
+    if (!gg) t--;
+  }
+  const pool = shuffled(CITIES, i*17 + 5);
+  const isl = gg.isl.map((p, k) => ({r:p.r, c:p.c, num:0, name: pool[k % pool.length]}));
+  gg.sol.forEach(e => { isl[e.a].num += e.cnt; isl[e.b].num += e.cnt; });
+  g = {n: gg.n, isl, sol: gg.sol};
+  // la porte : l'île la plus basse, reliée à la grande ville en dessous
+  g.gate = 0;
+  g.isl.forEach((p, k) => { if (p.r > g.isl[g.gate].r) g.gate = k; });
+  cityOn = false;
+  cur = []; sel = null; won = false; msgKey = ''; pops = {}; lives = MAX_LIVES;
+  mistakes = 0; hintsUsed = 0;
+  hideWin();
+  timerReset();
+  confetti = null; confettiLife = 0;
+  buildWorld();
+  updateGameLabels();
+  document.getElementById('next').disabled = true;
+  resize();
+  render();
+}
+
+function updateLives(){
+  const box = document.getElementById('lives');
+  box.innerHTML = '';
+  for (let k=0; k<MAX_LIVES; k++) {
+    const s = document.createElement('span');
+    s.textContent = '♥';
+    if (k >= lives) s.className = 'off';
+    box.appendChild(s);
+  }
+  // barre de progression : niveaux déjà passés dans la partie
+  const fill = document.getElementById('progfill');
+  if (fill) fill.style.width = Math.round(((lvl + (won ? 1 : 0)) / TOTAL) * 100) + '%';
+}
+
+// ---------- Chronomètre : temps de jeu actif sur le niveau ----------
+let playMs = 0, timerOn = false, timerStart = 0;
+function timerReset(){ playMs = 0; timerStart = performance.now(); timerOn = true; }
+function timerStartNow(){ if (!timerOn) { timerStart = performance.now(); timerOn = true; } }
+function timerStop(){ if (timerOn) { playMs += performance.now() - timerStart; timerOn = false; } }
+function fmtTime(ms){
+  const s = Math.floor(ms/1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  const p = v => String(v).padStart(2, '0');
+  return h ? `${h}:${p(m)}:${p(sec)}` : `${m}:${p(sec)}`;
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { timerStop(); return; }
+  const game = document.getElementById('scr-game');
+  if (g && !won && game && !game.hidden && document.getElementById('tut').hidden) timerStartNow();
+});
+
+// Écran de fin : étoiles selon les erreurs et les indices utilisés
+function showWin(){
+  const s = Math.max(1, Math.min(3, 3 - mistakes - hintsUsed));
+  const stars = document.getElementById('stars');
+  stars.innerHTML = '';
+  for (let k=0; k<3; k++) {
+    const el = document.createElement('span');
+    el.textContent = '★';
+    if (k >= s) el.className = 'off';
+    stars.appendChild(el);
+  }
+  document.getElementById('winmsg').textContent = t(lvl < TOTAL-1 ? 'won' : 'allDone');
+  document.getElementById('winlives').textContent = `${wt('livesLeft')} : ${lives} / ${MAX_LIVES}`;
+  document.getElementById('wintime').textContent = `${wt('time')} : ${fmtTime(playMs)}`;
+  document.getElementById('win-retry').textContent = wt('replay');
+  document.getElementById('win-next').textContent = lvl < TOTAL-1 ? wt('next') : wt('chapters');
+  document.getElementById('win').hidden = false;
+}
+function hideWin(){ document.getElementById('win').hidden = true; }
+
+function updateGameLabels(){
+  const c = chapterOf(lvl);
+  document.getElementById('lvl').textContent = `${t('level')} ${lvl+1} ${t('of')} ${TOTAL}`;
+  document.getElementById('chaptitle').textContent = CHAPTERS[c][settings.lang] || CHAPTERS[c].fr;
+  document.getElementById('next-txt').textContent = lvl < TOTAL-1 ? t('next') : t('done');
+  updateLives();
+}
+
+// ---------- Règles ----------
+function findE(arr, a, b){ return arr.find(e => (e.a===a && e.b===b) || (e.a===b && e.b===a)); }
+function degree(i){ return cur.filter(e => e.a===i || e.b===i).reduce((s,e) => s+e.cnt, 0); }
+function aligned(a, b){ const A=g.isl[a], B=g.isl[b]; return (A.r===B.r || A.c===B.c) && a!==b; }
+
+function blockedByIsland(a, b){
+  const A=g.isl[a], B=g.isl[b];
+  return g.isl.some((p,i) => {
+    if (i===a || i===b) return false;
+    if (A.r===B.r) return p.r===A.r && p.c>Math.min(A.c,B.c) && p.c<Math.max(A.c,B.c);
+    return p.c===A.c && p.r>Math.min(A.r,B.r) && p.r<Math.max(A.r,B.r);
+  });
+}
+
+function pairCross(a, b, e){
+  const A=g.isl[a], B=g.isl[b], P=g.isl[e.a], Q=g.isl[e.b];
+  if (A.r===B.r && P.c===Q.c) {
+    const lo=Math.min(A.c,B.c), hi=Math.max(A.c,B.c);
+    return P.c>lo && P.c<hi && A.r>Math.min(P.r,Q.r) && A.r<Math.max(P.r,Q.r);
+  }
+  if (A.c===B.c && P.r===Q.r) {
+    const lo=Math.min(A.r,B.r), hi=Math.max(A.r,B.r);
+    return P.r>lo && P.r<hi && A.c>Math.min(P.c,Q.c) && A.c<Math.max(P.c,Q.c);
+  }
+  return false;
+}
+
+// Renvoie une clé de message en cas d'erreur, sinon null
+function toggle(a, b){
+  if (!aligned(a,b)) return 'pick';
+  let e = findE(cur, a, b);
+  let next = e ? e.cnt+1 : 1;
+  if (next > 2) next = 0;
+  if (next > 0) {
+    const delta = next - (e ? e.cnt : 0);
+    if (degree(a) + delta > g.isl[a].num || degree(b) + delta > g.isl[b].num) return 'error';
+  }
+  if (next === 0) { cur = cur.filter(x => x !== e); sfxPlace(); return null; }
+  if (!e) {
+    if (blockedByIsland(a,b)) return 'blocked';
+    if (cur.some(x => pairCross(a,b,x))) return 'cross';
+    cur.push({a, b, cnt: 1});
+  } else e.cnt = next;
+  sfxPlace();
+  return null;
+}
+
+function solved(){
+  if (!g.isl.every((p,i) => degree(i) === p.num)) return false;
+  if (g.gate >= 0 && !cityOn) return false;
+  const seen = new Set([0]), stack = [0];
+  while (stack.length) {
+    const i = stack.pop();
+    cur.forEach(e => {
+      if (e.cnt<=0) return;
+      const j = e.a===i ? e.b : e.b===i ? e.a : -1;
+      if (j>=0 && !seen.has(j)) { seen.add(j); stack.push(j); }
+    });
+  }
+  return seen.size === g.isl.length;
+}
+
+function hint(){
+  for (const s of g.sol) {
+    const ce = findE(cur, s.a, s.b), have = ce ? ce.cnt : 0;
+    if (have !== s.cnt) {
+      cur = cur.filter(e => e===ce || !(e.cnt>0 && pairCross(s.a, s.b, e)));
+      if (ce) ce.cnt = s.cnt; else cur.push({a:s.a, b:s.b, cnt:s.cnt});
+      // une ville trop chargée perd ses ponts qui ne sont pas dans la solution
+      [s.a, s.b].forEach(i => {
+        while (degree(i) > g.isl[i].num) {
+          const wrong = cur.find(e => (e.a===i || e.b===i) && !isSolEdge(e));
+          if (!wrong) break;
+          cur = cur.filter(x => x !== wrong);
+        }
+      });
+      msgKey = 'hinted';
+      hintsUsed++;
+      pops[s.a] = pops[s.b] = performance.now();
+      check();
+      return;
+    }
+  }
+  // toutes les îles sont justes : si le pont vers la ville manque, on le pose
+  if (g.gate >= 0 && !cityOn) {
+    cityOn = true;
+    msgKey = 'hinted';
+    hintsUsed++;
+    sfxPlace();
+    check();
+    return;
+  }
+  msgKey = 'right';
+  render();
+}
+
+// Une erreur coûte une vie. Plus de vies : le niveau recommence.
+// reason : 'error' (surcharge), 'cross' (croisement) ou 'blocked' (pont au-dessus d'une ville)
+function loseLife(reason){
+  lives--;
+  mistakes++;
+  sfxFail();
+  if (lives <= 0) {
+    cur = []; sel = null; lives = MAX_LIVES;
+    msgKey = 'levelReset';
+  } else {
+    msgKey = reason;
+  }
+  updateLives();
+}
+
+function isSolEdge(e){
+  return g.sol.some(s => (s.a===e.a && s.b===e.b) || (s.a===e.b && s.b===e.a));
+}
+
+// Retire un pont que le joueur a touché (sans coût)
+function removeEdge(e){
+  if (e === CITY_EDGE) { cityOn = false; sfxTap(); return; }
+  cur = cur.filter(x => x !== e);
+  sfxTap();
+}
+
+function check(){
+  if (!won && solved()) {
+    won = true;
+    msgKey = lvl < TOTAL-1 ? 'won' : 'allDone';
+    document.getElementById('next').disabled = false;
+    timerStop();
+    sfxWin(); burst();
+    progress = Math.max(progress, Math.min(lvl+1, TOTAL-1));
+    saveProgress();
+    updateLives();
+    showWin();
+  }
+  render();
+}
+
+// ---------- 3D : scène, îles, villes, ponts ----------
+const stage = document.getElementById('stage');
+let renderer, scene, camera, world, bridgeGroup, ring, raycaster, ndc, waterMap, boats = [];
+let carGroup = null, cars = [], birds = [], floaters = [], spanList = [];
+// Grande ville finale : une seule île (la « porte ») doit être reliée à elle par un pont
+let gate = -1, cityOn = false, cityGroup = null;
+const CITY_EDGE = {city: true};
+const CITY_NAME = 'Kinshasa';
+
+// Voiture rouge, vue de côté (longueur selon X)
+function makeCar(){
+  const c = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.03, 0.05), std(0xd7261e, {roughness:0.4}));
+  body.position.y = 0.02; body.castShadow = true; c.add(body);
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.03, 0.043), std(0xff4a3d, {roughness:0.4}));
+  cabin.position.set(-0.005, 0.05, 0); cabin.castShadow = true; c.add(cabin);
+  const glass = new THREE.Mesh(new THREE.BoxGeometry(0.052, 0.013, 0.045), std(0x1b2a4a, {roughness:0.2}));
+  glass.position.set(-0.005, 0.05, 0); c.add(glass);
+  [-0.032, 0.032].forEach(x => [-0.027, 0.027].forEach(z => {
+    const w = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.012, 8), std(0x222222));
+    w.rotation.x = Math.PI/2; w.position.set(x, 0.0, z); c.add(w);
+  }));
+  return c;
+}
+
+// Oiseau : deux ailes qui battent, vu du dessus
+function makeBird(){
+  const b = new THREE.Group();
+  [1, -1].forEach(side => {
+    const pivot = new THREE.Group();
+    const wing = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.008, 0.08), std(0x2b2b2b));
+    wing.position.z = side * 0.04;
+    pivot.add(wing);
+    pivot.userData.side = side;
+    b.add(pivot);
+    b.userData[side > 0 ? 'wL' : 'wR'] = pivot;
+  });
+  return b;
+}
+
+// Petit bateau à voile (coque rouge, voile blanche)
+function makeBoat(){
+  const b = new THREE.Group();
+  const hull = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.05, 0.08), std(COL.roof));
+  hull.position.y = 0.01; b.add(hull);
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.05, 0.06), std(0xffffff));
+  cabin.position.set(-0.02, 0.06, 0); b.add(cabin);
+  const sail = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.13, 3), std(0xfff8ec, {side: THREE.DoubleSide}));
+  sail.position.set(0.04, 0.1, 0); b.add(sail);
+  return b;
+}
+
+// Ciel en dégradé (du bleu clair à l'horizon au bleu plus doux en haut)
+function skyTex(){
+  const c = document.createElement('canvas');
+  c.width = 4; c.height = 256;
+  const x = c.getContext('2d');
+  const gr = x.createLinearGradient(0, 0, 0, 256);
+  gr.addColorStop(0, '#5fb8e8');
+  gr.addColorStop(0.7, '#bfe6f7');
+  gr.addColorStop(1, '#f3f7e9');
+  x.fillStyle = gr; x.fillRect(0, 0, 4, 256);
+  return new THREE.CanvasTexture(c);
+}
+
+// Texture d'eau : reflets clairs irréguliers, répétable sans couture
+function waterTex(){
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 256;
+  const x = c.getContext('2d');
+  x.fillStyle = '#2f8fcf';
+  x.fillRect(0, 0, 256, 256);
+  let s = 7;
+  const r = () => { s = Math.sin(s*12.9898 + 78.233) * 43758.5453; return s - Math.floor(s); };
+  for (let i=0; i<70; i++) {
+    const px = r()*256, py = r()*256, w = 14 + r()*34;
+    x.strokeStyle = 'rgba(255,255,255,' + (0.10 + r()*0.18).toFixed(2) + ')';
+    x.lineWidth = 2 + r()*2;
+    // répète sur les bords pour éviter les coutures
+    for (const ox of [-256, 0, 256]) for (const oy of [-256, 0, 256]) {
+      x.beginPath();
+      x.moveTo(px + ox, py + oy);
+      x.quadraticCurveTo(px + ox + w/2, py + oy - 4, px + ox + w, py + oy);
+      x.stroke();
+    }
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(7, 7);
+  return tex;
+}
+let hitboxes = [], islandGroups = [];
+let zoom = 1, panX = 0, panZ = 0, dist = 12, W = 300, H = 300;
+const ELEV = 0.9; // angle de la caméra fixe (environ 52°)
+const COL = {land:0x9ccf76, rock:0x7a5c3e, cream:0xf2e6cf, grey:0xd9e2e8, blue:0x3d9fd6, roof:0xc4452f, deck:0xc4452f, tower:0xa83a28, cable:0xf6ecdc, gold:0xf2c46d, tree:0x3f8f4a};
+const PALETTE = [0xf3ead8, 0xd9e2e8, 0xf2c46d, 0xb9c8d2, 0xe8b7a0];
+
+function std(color, opts={}){ return new THREE.MeshStandardMaterial(Object.assign({color, roughness:0.7}, opts)); }
+
+function initScene(){
+  renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5)); // milieu de gamme
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  stage.appendChild(renderer.domElement);
+  scene = new THREE.Scene();
+  scene.background = skyTex();
+  scene.fog = new THREE.Fog(0xbfe6f7, 18, 46);
+  camera = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
+  // lumière d'ambiance : ciel bleu en haut, reflets d'eau en bas
+  scene.add(new THREE.HemisphereLight(0xe6f6ff, 0x2a6f9e, 0.75));
+  // soleil chaud avec ombres portées
+  const sun = new THREE.DirectionalLight(0xfff1d6, 0.95);
+  sun.position.set(-5, 11, 7);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024);
+  const sc = sun.shadow.camera;
+  sc.left = -9; sc.right = 9; sc.top = 9; sc.bottom = -9; sc.near = 1; sc.far = 40;
+  sun.shadow.bias = -0.0008;
+  scene.add(sun);
+  scene.add(sun.target);
+  // eau : ondulations animées (texture décalée à chaque image)
+  waterMap = waterTex();
+  const water = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({
+    color: 0xffffff, map: waterMap, roughness: 0.22, metalness: 0.15
+  }));
+  water.rotation.x = -Math.PI/2;
+  water.receiveShadow = true;
+  scene.add(water);
+  // petits bateaux qui naviguent autour du plateau
+  boats = [0, 1].map(k => {
+    const b = new THREE.Group();
+    const hull = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.05, 0.08), std(COL.roof));
+    const cabin = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.05, 0.06), std(0xffffff));
+    cabin.position.set(-0.02, 0.05, 0);
+    b.add(hull); b.add(cabin);
+    b.userData.phase = k * Math.PI;
+    scene.add(b);
+    return b;
+  });
+  // bateaux qui flottent à l'ancre, et oiseaux qui tournent dans le ciel
+  carGroup = new THREE.Group(); scene.add(carGroup);
+  floaters = [[-4.2, 3.4], [4.6, -3.9], [-3.8, -4.4], [4.1, 4.6]].map((p, k) => {
+    const b = makeBoat();
+    b.position.set(p[0], 0, p[1]);
+    b.userData.base = {x: p[0], z: p[1]};
+    b.userData.phase = k * 1.7;
+    scene.add(b);
+    return b;
+  });
+  birds = [0, 1, 2, 3, 4].map(k => {
+    const b = makeBird();
+    b.userData.phase = k * 1.3;
+    b.userData.speed = 0.16 + k*0.03;
+    b.userData.radius = 5 + (k % 2) * 1.6;
+    b.userData.height = 1.7 + (k % 3) * 0.25;
+    scene.add(b);
+    return b;
+  });
+  ring = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.03, 6, 28), new THREE.MeshBasicMaterial({color:0xff8a1f}));
+  ring.rotation.x = -Math.PI/2;
+  ring.visible = false;
+  scene.add(ring);
+  world = new THREE.Group(); scene.add(world);
+  bridgeGroup = new THREE.Group(); scene.add(bridgeGroup);
+  raycaster = new THREE.Raycaster();
+  ndc = new THREE.Vector2();
+}
+
+// Construit les îles et leurs villes (une fois par niveau)
+function buildWorld(){
+  world.clear();
+  hitboxes = []; islandGroups = [];
+  const n = g.n, off = (n-1)/2, light = n >= 9; // grands niveaux : moins de détails
+  g.isl.forEach((p, i) => {
+    const x = p.c - off, z = p.r - off;
+    const grp = new THREE.Group();
+    grp.position.set(x, 0, z);
+    const rock = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.2, 0.22, 10), std(COL.rock));
+    rock.position.y = -0.07; grp.add(rock);
+    const land = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.38, 0.14, 12), std(COL.land));
+    land.position.y = 0.05; grp.add(land);
+    const foam = new THREE.Mesh(new THREE.CylinderGeometry(0.43, 0.43, 0.01, 14), std(0xffffff, {transparent:true, opacity:0.55}));
+    foam.position.y = 0.0; grp.add(foam);
+    buildCity(grp, p.name, i*1.31 + 0.4, light);
+    grp.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    world.add(grp);
+    islandGroups[i] = grp;
+    const hb = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.8, 10), new THREE.MeshBasicMaterial({transparent:true, opacity:0, depthWrite:false}));
+    hb.position.set(x, 0.3, z);
+    hb.userData.idx = i;
+    world.add(hb);
+    hitboxes.push(hb);
+    // étiquette (chiffre + nom), dessinée à la demande
+    const label = new THREE.Sprite(new THREE.SpriteMaterial({transparent:true}));
+    label.scale.set(1.0, 0.5, 1);
+    label.position.set(0, 0.95, 0);
+    grp.add(label);
+    grp.userData.label = label;
+    grp.userData.key = '';
+  });
+  buildCityBig();
+  frameCamera();
+}
+
+// Grande ville au bas du plateau, dans la colonne de la porte
+function buildCityBig(){
+  cityGroup = null;
+  if (!g || g.gate < 0) return;
+  const off = (g.n-1)/2;
+  const gp = g.isl[g.gate];
+  const x = gp.c - off, z = cityZ();
+  const grp = new THREE.Group();
+  grp.position.set(x, 0, z);
+  // grande presqu'île urbaine, bien plus large qu'une île
+  const slab = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.1, 0.14, 28), std(COL.land));
+  slab.position.y = 0.05; grp.add(slab);
+  const foot = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 0.7, 0.2, 28), std(COL.rock));
+  foot.position.y = -0.07; grp.add(foot);
+  // quartier dense : 5 × 3 immeubles, avec une tour centrale
+  let s = 3.7;
+  const rnd = () => { s = Math.sin(s*12.9898 + 78.233) * 43758.5453; return s - Math.floor(s); };
+  for (let i=-2; i<=2; i++) for (let j=-1; j<=1; j++) {
+    const centre = (i===0 && j===0);
+    const h = centre ? 1.35 : 0.22 + rnd()*0.5;
+    addBox(grp, 0.22, h, 0.22, PALETTE[Math.floor(rnd()*PALETTE.length)], i*0.36, 0.12 + h/2, j*0.36, 2, Math.max(3, Math.round(h/0.08)));
+  }
+  grp.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  // zone cliquable : toucher la ville pose ou retire le pont
+  const hb = new THREE.Mesh(new THREE.BoxGeometry(2.3, 1.6, 2.2), new THREE.MeshBasicMaterial({transparent:true, opacity:0, depthWrite:false}));
+  hb.position.set(x, 0.8, z);
+  hb.userData.idx = -2;
+  world.add(hb);
+  hitboxes.push(hb);
+  const label = new THREE.Sprite(new THREE.SpriteMaterial({transparent:true}));
+  label.scale.set(1.3, 0.65, 1);
+  label.position.set(0, 1.75, 0);
+  grp.add(label);
+  grp.userData.label = label;
+  grp.userData.key = '';
+  world.add(grp);
+  cityGroup = grp;
+}
+
+// Position de la grande ville : sous la porte, hors du plateau
+function cityZ(){ return (g.n-1)/2 + 1.6; }
+
+function updateCityLabel(){
+  if (!cityGroup) return;
+  const key = cityOn ? 'on' : 'off';
+  if (cityGroup.userData.key === key) return;
+  cityGroup.userData.key = key;
+  const old = cityGroup.userData.label.material.map;
+  if (old) old.dispose();
+  cityGroup.userData.label.material.map = labelTexture(1, CITY_NAME, cityOn ? 'ok' : '');
+  cityGroup.userData.label.material.needsUpdate = true;
+}
+
+// Texture de façade : fenêtres vitrées en grille, pour donner du relief aux murs
+const facadeCache = {};
+function facadeTex(color, cols, rows){
+  const key = color + '|' + cols + '|' + rows;
+  if (facadeCache[key]) return facadeCache[key];
+  const c = document.createElement('canvas');
+  c.width = 128; c.height = 128;
+  const x = c.getContext('2d');
+  x.fillStyle = '#' + color.toString(16).padStart(6, '0');
+  x.fillRect(0, 0, 128, 128);
+  const cw = 128/cols, rh = 128/rows;
+  for (let r=0; r<rows; r++) for (let k=0; k<cols; k++) {
+    const wx = k*cw + cw*0.22, wy = r*rh + rh*0.2;
+    x.fillStyle = '#7fb8d6';
+    x.fillRect(wx, wy, cw*0.56, rh*0.42);
+    x.fillStyle = 'rgba(255,255,255,0.55)';
+    x.fillRect(wx + cw*0.08, wy + rh*0.08, cw*0.14, rh*0.12);
+    x.fillStyle = 'rgba(40,50,70,0.4)';
+    x.fillRect(wx - 2, wy + rh*0.42, cw*0.56 + 4, rh*0.05);
+  }
+  const tex = new THREE.CanvasTexture(c);
+  facadeCache[key] = tex;
+  return tex;
+}
+
+function addBox(grp, w, h, d, color, x, y, z, cols, rows){
+  const mat = new THREE.MeshStandardMaterial({map: facadeTex(color, cols, rows), roughness: 0.8});
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  grp.add(m);
+  // dalle de toit, légèrement plus large que le mur
+  const cap = new THREE.Mesh(new THREE.BoxGeometry(w*1.08, 0.02, d*1.08), std(0x8a8f99, {roughness:0.9}));
+  cap.position.set(x, y + h/2 + 0.01, z);
+  grp.add(cap);
+  return m;
+}
+
+// Maison : murs à fenêtres, porte, toit en pyramide
+function addHouse(grp, x, z, w, h, d, color){
+  const base = 0.12;
+  addBox(grp, w, h, d, color, x, base + h/2, z, 2, 2);
+  const roofH = h*0.7;
+  // toits en tuiles de trois teintes, choisies selon la position
+  const roofCols = [0xb5532f, 0x7d3b2a, 0xc7743c];
+  const rc = roofCols[Math.abs(Math.floor(x*131 + z*57)) % roofCols.length];
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(w*0.72, roofH, 4), std(rc));
+  roof.position.set(x, base + h + roofH/2, z);
+  roof.rotation.y = Math.PI/4;
+  grp.add(roof);
+  const door = new THREE.Mesh(new THREE.BoxGeometry(w*0.2, h*0.42, 0.01), std(0x4a2e1d));
+  door.position.set(x, base + h*0.21, z + d/2 + 0.005);
+  grp.add(door);
+}
+
+function buildCity(grp, name, seed, light){
+  const kind = Object.keys(SCENES).find(k => SCENES[k].includes(name)) || 'houses';
+  const add = (geo, color, x, y, z, opts) => {
+    const m = new THREE.Mesh(geo, std(color, opts));
+    m.position.set(x, y, z);
+    grp.add(m);
+    return m;
+  };
+  let s = seed;
+  const rnd = () => { s = Math.sin(s*12.9898 + 78.233) * 43758.5453; return s - Math.floor(s); };
+  if (kind === 'skyline') {
+    const count = light ? 4 : 6;
+    for (let k=0; k<count; k++) {
+      const h = 0.25 + rnd()*0.4;
+      addBox(grp, 0.09, h, 0.09, PALETTE[Math.floor(rnd()*PALETTE.length)], -0.2 + k*(0.4/(count-1)), 0.12 + h/2, 0, 2, Math.max(3, Math.round(h/0.08)));
+    }
+  } else if (kind === 'volcano') {
+    add(new THREE.ConeGeometry(0.24, 0.45, 8), 0x6f8fa6, 0, 0.12 + 0.225, 0);
+    add(new THREE.ConeGeometry(0.09, 0.12, 8), 0xffffff, 0, 0.12 + 0.45 - 0.06, 0);
+  } else if (kind === 'lake') {
+    add(new THREE.CylinderGeometry(0.14, 0.14, 0.01, 12), COL.blue, 0.2, 0.13, 0.12);
+    for (let k=0; k<3; k++) {
+      const hx = -0.2 + k*0.16;
+      addHouse(grp, hx, -0.05, 0.1, 0.1, 0.1, PALETTE[k]);
+    }
+  } else if (kind === 'river') {
+    add(new THREE.BoxGeometry(0.7, 0.02, 0.14), COL.blue, 0, 0.13, 0);
+    const arch = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.03, 6, 12, Math.PI), std(COL.roof));
+    arch.position.set(0, 0.12, 0);
+    arch.rotation.y = Math.PI/2;
+    grp.add(arch);
+  } else if (kind === 'tower') {
+    add(new THREE.CylinderGeometry(0.07, 0.09, 0.5, 8), COL.cream, 0, 0.12 + 0.25, 0);
+    add(new THREE.SphereGeometry(0.1, 10, 8, 0, Math.PI*2, 0, Math.PI/2), COL.gold, 0, 0.12 + 0.5, 0);
+    add(new THREE.BoxGeometry(0.14, 0.12, 0.14), COL.grey, -0.2, 0.12 + 0.06, 0.08);
+    add(new THREE.BoxGeometry(0.14, 0.12, 0.14), COL.grey, 0.2, 0.12 + 0.06, -0.08);
+  } else {
+    const count = light ? 3 : 4;
+    for (let k=0; k<count; k++) {
+      const h = 0.1 + rnd()*0.12;
+      const x = -0.22 + k*(0.44/(count-1));
+      addHouse(grp, x, rnd()*0.1 - 0.05, 0.11, h, 0.11, PALETTE[Math.floor(rnd()*PALETTE.length)]);
+    }
+    if (!light) {
+      add(new THREE.CylinderGeometry(0.012, 0.016, 0.08, 6), 0x6b4a2b, 0.22, 0.16, 0.2);
+      add(new THREE.SphereGeometry(0.07, 10, 8), COL.tree, 0.22, 0.26, 0.2);
+    }
+  }
+}
+
+// Dessine les ponts (tabliers, tours et câbles) selon les traits posés
+function buildBridges(){
+  bridgeGroup.children.slice().forEach(c => { bridgeGroup.remove(c); if (c.geometry) c.geometry.dispose(); });
+  carGroup.clear(); cars = []; spanList = [];
+  if (!g) return;
+  const off = (g.n-1)/2;
+  cur.forEach(e => {
+    if (e.cnt<=0) return;
+    const P = g.isl[e.a], Q = g.isl[e.b];
+    const ax = P.c-off, az = P.r-off, bx = Q.c-off, bz = Q.r-off;
+    const dx = bx-ax, dz = bz-az, L = Math.hypot(dx, dz);
+    const ux = dx/L, uz = dz/L, nx = -uz, nz = ux;
+    const endR = 0.34;
+    const offs = e.cnt===1 ? [0] : [-0.09, 0.09];
+    offs.forEach(o => buildSpan(
+      ax + ux*endR + nx*o, az + uz*endR + nz*o,
+      bx - ux*endR + nx*o, bz - uz*endR + nz*o, e
+    ));
+  });
+  // pont vers la grande ville, s'il est posé
+  if (cityOn && cityGroup) {
+    const P = g.isl[g.gate], off2 = (g.n-1)/2;
+    const ax = P.c - off2, az = P.r - off2;
+    buildSpan(ax, az + 0.34, ax, cityZ() - 1.05, CITY_EDGE);
+  }
+  // une voiture par tablier, qui roule d'un bout à l'autre puis revient
+  spanList.forEach((sp, k) => {
+    const car = makeCar();
+    carGroup.add(car);
+    cars.push({mesh: car, span: sp, speed: 0.22 + (k % 3)*0.05, phase: k*0.61});
+  });
+}
+
+function buildSpan(sx, sz, ex, ez, edge){
+  const dx = ex-sx, dz = ez-sz, L = Math.hypot(dx, dz);
+  const ux = dx/L, uz = dz/L;
+  const deckY = 0.2, ang = Math.atan2(-uz, ux);
+  spanList.push({sx, sz, ex, ez, ang});
+  // tablier en trois bandes visibles : rouge, jaune, bleu (couleurs du drapeau)
+  const BANDS = [0xce1126, 0xf7d618, 0x007fff];
+  BANDS.forEach((col, i) => {
+    const seg = new THREE.Mesh(new THREE.BoxGeometry(L/3, 0.05, 0.12), std(col, {roughness: 0.5}));
+    const t = (i + 0.5) / 3;
+    seg.position.set(sx + dx*t, deckY, sz + dz*t);
+    seg.rotation.y = ang;
+    seg.userData.edge = edge;
+    seg.castShadow = true; seg.receiveShadow = true;
+    bridgeGroup.add(seg);
+    // garde-corps blancs de chaque côté du tablier
+    [-0.06, 0.06].forEach(o => {
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(L/3, 0.035, 0.012), std(0xf7f7f2));
+      rail.position.set(sx + dx*t - uz*o, deckY + 0.04, sz + dz*t + ux*o);
+      rail.rotation.y = ang;
+      rail.userData.edge = edge;
+      rail.castShadow = true;
+      bridgeGroup.add(rail);
+    });
+  });
+  const tp = [0.3, 0.7].map(t => ({x: sx + dx*t, z: sz + dz*t}));
+  tp.forEach(p => {
+    const tw = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.42, 0.14), std(COL.tower));
+    tw.position.set(p.x, deckY + 0.21, p.z);
+    tw.rotation.y = ang;
+    tw.userData.edge = edge;
+    tw.castShadow = true;
+    bridgeGroup.add(tw);
+    // pile en béton qui descend jusqu'à l'eau
+    const pier = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.045, deckY, 8), std(0xd9d4c7, {roughness:0.9}));
+    pier.position.set(p.x, deckY/2, p.z);
+    pier.userData.edge = edge;
+    pier.castShadow = true;
+    bridgeGroup.add(pier);
+  });
+  // câbles : des tours vers les extrémités, et un câble qui pend entre les deux tours
+  const T0 = new THREE.Vector3(tp[0].x, deckY+0.42, tp[0].z);
+  const T1 = new THREE.Vector3(tp[1].x, deckY+0.42, tp[1].z);
+  const C = new THREE.Vector3((T0.x+T1.x)/2, T0.y-0.22, (T0.z+T1.z)/2); // le câble reste au-dessus du tablier
+  const pts = [new THREE.Vector3(sx, deckY, sz), T0];
+  for (let k=0; k<=20; k++) {
+    const t = k/20, a = (1-t)*(1-t), b = 2*(1-t)*t, c = t*t;
+    pts.push(new THREE.Vector3(a*T0.x + b*C.x + c*T1.x, a*T0.y + b*C.y + c*T1.y, a*T0.z + b*C.z + c*T1.z));
+  }
+  pts.push(T1, new THREE.Vector3(ex, deckY, ez));
+  // câble épais (tube) plutôt qu'un trait fin
+  const cable = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 60, 0.009, 5, false), std(COL.cable, {roughness:0.4}));
+  cable.userData.edge = edge;
+  cable.castShadow = true;
+  bridgeGroup.add(cable);
+  // suspentes verticales : du câble courbe jusqu'au tablier
+  const quad = (a, b, c, t) => (1-t)*(1-t)*a + 2*(1-t)*t*b + t*t*c;
+  for (let k=1; k<=6; k++) {
+    const t = k/7;
+    const cx = quad(T0.x, C.x, T1.x, t), cy = quad(T0.y, C.y, T1.y, t), cz = quad(T0.z, C.z, T1.z, t);
+    const dxk = sx + dx*(0.3 + 0.4*t), dzk = sz + dz*(0.3 + 0.4*t);
+    const h = cy - deckY;
+    if (h < 0.01) continue;
+    const hanger = new THREE.Mesh(new THREE.BoxGeometry(0.006, h, 0.006), std(COL.cable));
+    hanger.position.set((cx + dxk)/2, deckY + h/2, (cz + dzk)/2);
+    hanger.userData.edge = edge;
+    bridgeGroup.add(hanger);
+  }
+}
+
+// Étiquette : chiffre dans une pastille, nom de la ville dessous
+function labelTexture(num, name, state){
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 128;
+  const x = c.getContext('2d');
+  x.beginPath(); x.arc(128, 40, 34, 0, Math.PI*2);
+  x.fillStyle = state==='ok' ? '#17a673' : state==='bad' ? '#f0443a' : '#ffffff';
+  x.fill();
+  x.lineWidth = 5; x.strokeStyle = '#ffffff'; x.stroke();
+  x.fillStyle = state ? '#ffffff' : '#1b2a4a';
+  x.font = 'bold 40px system-ui,sans-serif';
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  x.fillText(String(num), 128, 42);
+  x.font = 'bold 26px system-ui,sans-serif';
+  x.textBaseline = 'alphabetic';
+  x.lineWidth = 6; x.strokeStyle = 'rgba(8,30,60,0.8)';
+  x.strokeText(name, 128, 118);
+  x.fillStyle = '#ffffff';
+  x.fillText(name, 128, 118);
+  const tex = new THREE.CanvasTexture(c);
+  return tex;
+}
+
+function updateLabels(){
+  if (!g) return;
+  g.isl.forEach((p, i) => {
+    const grp = islandGroups[i];
+    if (!grp) return;
+    const d = degree(i);
+    const state = d===p.num ? 'ok' : d>p.num ? 'bad' : '';
+    const key = `${p.num}|${p.name}|${state}`;
+    if (grp.userData.key === key) return;
+    grp.userData.key = key;
+    const old = grp.userData.label.material.map;
+    if (old) old.dispose();
+    grp.userData.label.material.map = labelTexture(p.num, p.name, state);
+    grp.userData.label.material.needsUpdate = true;
+  });
+}
+
+// ---------- Caméra fixe, zoom et déplacement ----------
+function frameCamera(){
+  if (!camera) return;
+  const n = g ? g.n : 5;
+  const half = n/2 + (g && g.gate >= 0 ? 2.4 : 0.9);
+  const fov = camera.fov * Math.PI/180;
+  dist = half / Math.tan(fov/2) * 1.1;
+  if (camera.aspect < 1) dist /= camera.aspect;
+  const d = dist / zoom;
+  camera.position.set(panX, Math.sin(ELEV)*d, panZ + Math.cos(ELEV)*d);
+  camera.lookAt(panX, 0, panZ);
+}
+
+function setZoom(z){
+  zoom = Math.min(3, Math.max(1, z));
+  if (zoom === 1) { panX = 0; panZ = 0; }
+  clampPan();
+  frameCamera();
+}
+
+function clampPan(){
+  const n = g ? g.n : 5;
+  const lim = (n/2) * (1 - 1/zoom) + 0.2;
+  panX = Math.max(-lim, Math.min(lim, panX));
+  panZ = Math.max(-lim, Math.min(lim, panZ));
+}
+
+function worldPerPx(){
+  const d = dist / zoom;
+  return 2 * d * Math.tan(camera.fov*Math.PI/360) / H;
+}
+
+function resize(){
+  if (!renderer) return;
+  W = Math.max(260, Math.min(480, window.innerWidth - 32));
+  H = Math.round(W * 0.95);
+  renderer.setSize(W, H);
+  camera.aspect = W / H;
+  camera.updateProjectionMatrix();
+  frameCamera();
+}
+
+// ---------- Confettis ----------
+function burst(){
+  const N = 90;
+  const pos = new Float32Array(N*3), col = new Float32Array(N*3);
+  const colors = [[0.95,0.65,0.25],[0.23,0.61,0.42],[0.84,0.32,0.23],[0.29,0.56,0.76],[0.97,0.84,0.09]];
+  confettiVel = new Float32Array(N*3);
+  for (let i=0; i<N; i++) {
+    pos[i*3] = 0; pos[i*3+1] = 1.0; pos[i*3+2] = 0;
+    confettiVel[i*3] = (Math.random()-0.5)*0.12;
+    confettiVel[i*3+1] = Math.random()*0.12 + 0.05;
+    confettiVel[i*3+2] = (Math.random()-0.5)*0.12;
+    const c = colors[i % colors.length];
+    col[i*3] = c[0]; col[i*3+1] = c[1]; col[i*3+2] = c[2];
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  confetti = new THREE.Points(geo, new THREE.PointsMaterial({size:0.12, vertexColors:true, transparent:true, opacity:1}));
+  scene.add(confetti);
+  confettiLife = 1;
+}
+let confettiVel = null;
+
+// ---------- Boucle d'affichage ----------
+function render(){
+  if (!g || !scene) return;
+  buildBridges();
+  updateLabels();
+  updateCityLabel();
+  document.getElementById('msg').textContent = msgKey ? t(msgKey) : '';
+}
+
+function frame(now){
+  requestAnimationFrame(frame);
+  if (!renderer || !g || !scene) return;
+  const tt = now/1000;
+  // ondulations de l'eau et bateaux qui naviguent
+  if (waterMap) { waterMap.offset.x = tt*0.012; waterMap.offset.y = tt*0.007; }
+  const R = g ? g.n/2*1.5 + 1.4 : 4;
+  boats.forEach(b => {
+    const a = tt*0.22 + b.userData.phase;
+    const dx = -Math.sin(a), dz = Math.cos(a);
+    b.position.set(Math.cos(a)*R, 0.02 + Math.sin(tt*2 + b.userData.phase)*0.012, Math.sin(a)*R);
+    b.rotation.y = Math.atan2(-dz, dx);
+  });
+  // bateaux à l'ancre : ils se balancent doucement, à l'écart du plateau
+  const kf = g ? Math.max(1, (g.n/2 + 1.2) / 3.6) : 1;
+  floaters.forEach(b => {
+    const ph = b.userData.phase;
+    b.position.set(b.userData.base.x*kf, 0.02 + Math.sin(tt*1.6 + ph)*0.02, b.userData.base.z*kf);
+    b.rotation.z = Math.sin(tt*1.1 + ph)*0.06;
+    b.rotation.y = 0.3 + Math.sin(tt*0.3 + ph)*0.15;
+  });
+  // oiseaux : vol circulaire et battement des ailes
+  birds.forEach(b => {
+    const ph = b.userData.phase, sp = b.userData.speed, Rb = b.userData.radius * (g ? Math.max(1, g.n/5) : 1);
+    const a = tt*sp + ph;
+    const dx = -Math.sin(a), dz = Math.cos(a);
+    b.position.set(Math.cos(a)*Rb, b.userData.height + Math.sin(tt*2.5 + ph)*0.1, Math.sin(a)*Rb);
+    b.rotation.y = Math.atan2(-dz, dx);
+    const s = Math.sin(tt*11 + ph) * 0.6;
+    b.userData.wL.rotation.x = -s;
+    b.userData.wR.rotation.x = s;
+  });
+  // voitures : aller-retour sur chaque tablier, avec demi-tour visible
+  cars.forEach(c => {
+    const u = ((tt*c.speed + c.phase) % 2 + 2) % 2;
+    const fwd = u < 1;
+    const s = fwd ? u : 2 - u;
+    const sp = c.span;
+    c.mesh.position.set(sp.sx + (sp.ex - sp.sx)*s, 0.225, sp.sz + (sp.ez - sp.sz)*s);
+    c.mesh.rotation.y = fwd ? sp.ang : sp.ang + Math.PI;
+  });
+  islandGroups.forEach((grp, i) => {
+    const age = pops[i] ? now - pops[i] : 999;
+    const s = age < 220 ? 1 + 0.12*(1 - age/220) : 1;
+    grp.scale.setScalar(s);
+    grp.position.y = Math.sin(tt*1.4 + i)*0.025;
+  });
+  if (sel !== null && islandGroups[sel]) {
+    ring.visible = true;
+    ring.position.set(islandGroups[sel].position.x, 0.02, islandGroups[sel].position.z);
+  } else {
+    ring.visible = false;
+  }
+  if (confetti) {
+    const arr = confetti.geometry.attributes.position.array;
+    for (let i=0; i<arr.length; i++) {
+      arr[i] += confettiVel[i];
+      if (i % 3 === 1) confettiVel[i] -= 0.004;
+    }
+    confetti.geometry.attributes.position.needsUpdate = true;
+    confettiLife -= 0.008;
+    confetti.material.opacity = Math.max(0, confettiLife);
+    if (confettiLife <= 0) { scene.remove(confetti); confetti.geometry.dispose(); confetti = null; }
+  }
+  renderer.render(scene, camera);
+}
+
+// ---------- Interaction ----------
+const ptrs = new Map();
+let downX = 0, downY = 0, moved = false, lastDist = 0, lastX = 0, lastY = 0;
+stage.addEventListener('pointerdown', ev => {
+  renderer.domElement.setPointerCapture(ev.pointerId);
+  ptrs.set(ev.pointerId, {x: ev.clientX, y: ev.clientY});
+  downX = lastX = ev.clientX; downY = lastY = ev.clientY;
+  moved = ptrs.size > 1;
+});
+stage.addEventListener('pointermove', ev => {
+  if (!ptrs.has(ev.pointerId)) return;
+  ptrs.set(ev.pointerId, {x: ev.clientX, y: ev.clientY});
+  if (ptrs.size === 2) {
+    const [a, b] = [...ptrs.values()];
+    const d = Math.hypot(a.x - b.x, a.y - b.y);
+    if (lastDist) setZoom(zoom * d / lastDist);
+    lastDist = d; moved = true;
+  } else if (ptrs.size === 1) {
+    if (Math.hypot(ev.clientX - downX, ev.clientY - downY) > 10) moved = true;
+    if (moved && zoom > 1) {
+      const k = worldPerPx();
+      panX -= (ev.clientX - lastX) * k;
+      panZ -= (ev.clientY - lastY) * k * 1.1;
+      clampPan();
+      frameCamera();
+    }
+    lastX = ev.clientX; lastY = ev.clientY;
+  }
+});
+function endPtr(ev){ ptrs.delete(ev.pointerId); lastDist = 0; }
+stage.addEventListener('pointercancel', endPtr);
+stage.addEventListener('pointerup', ev => {
+  const wasMoved = moved;
+  endPtr(ev);
+  if (wasMoved || won || !g || ptrs.size) return;
+  const rect = renderer.domElement.getBoundingClientRect();
+  ndc.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+  ndc.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(ndc, camera);
+  const hits = raycaster.intersectObjects(hitboxes, false);
+  const hit = hits.length ? hits[0].object.userData.idx : -1;
+  if (hit === -2) {
+    // grande ville : pose ou retire le pont de la porte
+    sel = null;
+    cityOn = !cityOn;
+    cityOn ? sfxPlace() : sfxTap();
+    msgKey = '';
+    check();
+    return;
+  }
+  if (hit < 0) {
+    // rien de touché sur une île : on regarde si un pont est touché
+    const bh = raycaster.intersectObjects(bridgeGroup.children, false).filter(o => o.object.userData.edge);
+    if (bh.length) { sel = null; removeEdge(bh[0].object.userData.edge); check(); return; }
+    sel = null; msgKey = ''; render(); return;
+  }
+  sfxTap(); pops[hit] = performance.now();
+  if (sel === null) { sel = hit; msgKey = ''; }
+  else if (sel === hit) { sel = null; }
+  else { const r = toggle(sel, hit); if (['error','cross','blocked'].includes(r)) loseLife(r); else msgKey = r || ''; sel = null; }
+  check();
+});
+stage.addEventListener('wheel', ev => { ev.preventDefault(); setZoom(zoom * (ev.deltaY < 0 ? 1.1 : 0.9)); }, {passive: false});
+window.addEventListener('resize', resize);
+
+// ---------- Navigation ----------
+const SCREENS = ['scr-home','scr-levels','scr-settings','scr-game'];
+function show(id){
+  SCREENS.forEach(s => { document.getElementById(s).hidden = (s !== id); });
+  if (id !== 'scr-game') { stopMusic(); timerStop(); }
+  if (id === 'scr-levels') renderLevels();
+  window.scrollTo(0, 0);
+}
+// ---------- Tutoriel (affiché une seule fois, avant le premier niveau) ----------
+const TUT = {
+  fr: [
+    'Touche une ville, puis une autre alignée avec elle pour tracer un pont.',
+    'Chaque ville doit avoir exactement le nombre de ponts affiché. Les ponts ne peuvent pas se croiser.',
+    'Touche un pont pour le retirer. Une erreur coûte une vie : fais attention !'
+  ],
+  en: [
+    'Tap a city, then another city in line with it to draw a bridge.',
+    'Each city needs exactly the number of bridges shown. Bridges cannot cross.',
+    'Tap a bridge to remove it. A mistake costs a life: be careful!'
+  ]
+};
+const TUT_ART = [
+  // 1 : deux îles, un doigt qui touche la première
+  `<svg viewBox="0 0 240 130" aria-hidden="true">
+    <ellipse cx="60" cy="84" rx="40" ry="16" fill="#5b4130"/><ellipse cx="60" cy="76" rx="40" ry="18" fill="#8ed46f"/>
+    <ellipse cx="180" cy="84" rx="40" ry="16" fill="#5b4130"/><ellipse cx="180" cy="76" rx="40" ry="18" fill="#8ed46f"/>
+    <circle class="tap" cx="60" cy="72" r="14" fill="#ff8a1f"/>
+    <circle class="tap" cx="180" cy="72" r="14" fill="#ff8a1f" style="animation-delay:.7s"/>
+    <path d="M60 72 L180 72" stroke="#fff" stroke-opacity=".5" stroke-width="3" stroke-dasharray="4 6"/>
+  </svg>`,
+  // 2 : trois îles avec leur nombre de ponts
+  `<svg viewBox="0 0 240 130" aria-hidden="true">
+    <path d="M40 66 Q80 30 120 66" fill="none" stroke="#0b2e52" stroke-width="9"/><path d="M40 66 Q80 30 120 66" fill="none" stroke="#f7d618" stroke-width="5"/>
+    <path d="M120 66 Q160 30 200 66" fill="none" stroke="#0b2e52" stroke-width="9"/><path d="M120 66 Q160 30 200 66" fill="none" stroke="#ce1126" stroke-width="5"/>
+    <ellipse cx="40" cy="80" rx="24" ry="11" fill="#5b4130"/><ellipse cx="40" cy="74" rx="24" ry="12" fill="#8ed46f"/>
+    <ellipse cx="120" cy="80" rx="24" ry="11" fill="#5b4130"/><ellipse cx="120" cy="74" rx="24" ry="12" fill="#8ed46f"/>
+    <ellipse cx="200" cy="80" rx="24" ry="11" fill="#5b4130"/><ellipse cx="200" cy="74" rx="24" ry="12" fill="#8ed46f"/>
+    <circle cx="40" cy="104" r="10" fill="#17a673"/><text x="40" y="108" font-size="13" font-weight="700" text-anchor="middle" fill="#fff">1</text>
+    <circle cx="120" cy="104" r="10" fill="#17a673"/><text x="120" y="108" font-size="13" font-weight="700" text-anchor="middle" fill="#fff">2</text>
+    <circle cx="200" cy="104" r="10" fill="#17a673"/><text x="200" y="108" font-size="13" font-weight="700" text-anchor="middle" fill="#fff">1</text>
+  </svg>`,
+  // 3 : un pont à toucher pour le retirer
+  `<svg viewBox="0 0 240 130" aria-hidden="true">
+    <ellipse cx="50" cy="84" rx="32" ry="14" fill="#5b4130"/><ellipse cx="50" cy="76" rx="32" ry="16" fill="#8ed46f"/>
+    <ellipse cx="190" cy="84" rx="32" ry="14" fill="#5b4130"/><ellipse cx="190" cy="76" rx="32" ry="16" fill="#8ed46f"/>
+    <rect x="72" y="60" width="32" height="4" fill="#ce1126"/><rect x="104" y="60" width="32" height="4" fill="#f7d618"/><rect x="136" y="60" width="32" height="4" fill="#007fff"/>
+    <circle class="tap" cx="120" cy="62" r="14" fill="#ff8a1f"/>
+  </svg>`
+];
+let tutStep = 0;
+function tutSeen(){ try { return localStorage.getItem('tutorialSeen') === '1'; } catch(e){ return true; } }
+function markTutSeen(){ try { localStorage.setItem('tutorialSeen', '1'); } catch(e){} }
+function showTut(step){
+  tutStep = step;
+  const L = TUT[settings.lang] || TUT.fr;
+  document.getElementById('tut-art').innerHTML = TUT_ART[step];
+  document.getElementById('tut-text').textContent = L[step];
+  document.getElementById('tut-dots').innerHTML = L.map((_, k) => `<span class="${k === step ? 'on' : ''}"></span>`).join('');
+  document.getElementById('tut-skip').textContent = settings.lang === 'en' ? 'Skip' : 'Passer';
+  document.getElementById('tut-next').textContent = step < L.length-1 ? (settings.lang === 'en' ? 'Next' : 'Suivant') : (settings.lang === 'en' ? "Let's go" : "C'est parti");
+  document.getElementById('tut').hidden = false;
+  timerStop();
+}
+function closeTut(){
+  document.getElementById('tut').hidden = true;
+  markTutSeen();
+  if (g && !won) timerStartNow();
+}
+document.getElementById('tut-skip').onclick = closeTut;
+document.getElementById('tut-next').onclick = () => {
+  if (tutStep < TUT_ART.length-1) showTut(tutStep+1); else closeTut();
+};
+
+function openLevel(i){
+  show('scr-game');
+  loadLevel(i);
+  playMusic(chapterOf(i));
+  if (i === 0 && !tutSeen()) showTut(0);
+}
+// Illustration de chaque chapitre (ville, fleuve, volcan, lac)
+const CH_ART = [
+  // Lingala : skyline de Kinshasa au coucher du soleil
+  `<svg viewBox="0 0 320 96" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb35c"/><stop offset="1" stop-color="#ffe7b8"/></linearGradient></defs>
+    <rect width="320" height="96" fill="url(#g0)"/><circle cx="262" cy="34" r="14" fill="#fff3d1"/>
+    <rect x="30" y="46" width="22" height="50" fill="#5b4f7a"/><rect x="56" y="34" width="26" height="62" fill="#7a6a9c"/><rect x="86" y="52" width="18" height="44" fill="#5b4f7a"/>
+    <rect x="110" y="26" width="20" height="70" fill="#7a6a9c"/><rect x="134" y="44" width="28" height="52" fill="#5b4f7a"/><rect x="166" y="56" width="18" height="40" fill="#7a6a9c"/>
+    <rect x="188" y="38" width="24" height="58" fill="#5b4f7a"/><rect x="216" y="50" width="20" height="46" fill="#7a6a9c"/><rect x="240" y="60" width="26" height="36" fill="#5b4f7a"/><rect x="270" y="48" width="20" height="48" fill="#7a6a9c"/>
+    <rect y="84" width="320" height="12" fill="#3d9fd6"/></svg>`,
+  // Tshiluba : fleuve et pont en arc
+  `<svg viewBox="0 0 320 96" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd0f0"/><stop offset="1" stop-color="#d9f3ff"/></linearGradient></defs>
+    <rect width="320" height="96" fill="url(#g1)"/><path d="M0 62 Q80 44 160 58 T320 52 V96 H0Z" fill="#9ccf76"/>
+    <rect y="66" width="320" height="30" fill="#2f8fcf"/>
+    <path d="M70 70 Q160 16 250 70" fill="none" stroke="#c4452f" stroke-width="7"/><path d="M70 70 Q160 16 250 70" fill="none" stroke="#f7d618" stroke-width="2" stroke-dasharray="4 6"/></svg>`,
+  // Kikongo : collines et palmiers
+  `<svg viewBox="0 0 320 96" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8875a"/><stop offset="1" stop-color="#ffd9a8"/></linearGradient></defs>
+    <rect width="320" height="96" fill="url(#g2)"/>
+    <path d="M0 74 Q60 46 120 70 T240 66 T320 58 V96 H0Z" fill="#4e9c47"/><path d="M0 86 Q90 70 180 84 T320 80 V96 H0Z" fill="#2f7a3a"/>
+    <path d="M220 60 V30" stroke="#6b4a2b" stroke-width="4"/><path d="M220 30 q-14 -8 -24 4 M220 30 q14 -8 24 4 M220 30 q-8 -14 0 -22 M220 30 q8 -6 18 -20" fill="none" stroke="#2f7a3a" stroke-width="4" stroke-linecap="round"/></svg>`,
+  // Swahili : lac, bateau et soleil
+  `<svg viewBox="0 0 320 96" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2aa7ea"/><stop offset="1" stop-color="#0a4c8c"/></linearGradient></defs>
+    <rect width="320" height="96" fill="url(#g3)"/><circle cx="60" cy="30" r="12" fill="#f7d618"/>
+    <path d="M0 58 Q40 50 80 58 T160 58 T240 58 T320 58 V96 H0Z" fill="#1d6aad"/>
+    <path d="M200 60 H250 L240 70 H210Z" fill="#c4452f"/><path d="M224 60 V40" stroke="#fff8ec" stroke-width="2"/><path d="M224 40 L244 56 H224Z" fill="#fff8ec"/></svg>`
+];
+
+function renderLevels(){
+  const box = document.getElementById('chapters');
+  box.innerHTML = '';
+  CHAPTERS.forEach((ch, c) => {
+    const open = c*15 <= progress;
+    const doneCount = open ? Math.max(0, Math.min(15, progress - c*15)) : 0;
+    const sec = document.createElement('div');
+    sec.className = 'ccard' + (open ? '' : ' locked');
+    const art = document.createElement('div');
+    art.className = 'art';
+    art.innerHTML = CH_ART[c];
+    if (!open) {
+      const lk = document.createElement('div');
+      lk.className = 'lock';
+      lk.innerHTML = '<svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>';
+      art.appendChild(lk);
+    }
+    sec.appendChild(art);
+    const body = document.createElement('div');
+    body.className = 'body';
+    const h = document.createElement('h3');
+    h.textContent = ch[settings.lang] || ch.fr;
+    body.appendChild(h);
+    if (!open) {
+      const note = document.createElement('p');
+      note.className = 'sub';
+      note.style.margin = '0';
+      note.textContent = t('lockedHint');
+      body.appendChild(note);
+      sec.appendChild(body);
+      box.appendChild(sec);
+      return;
+    }
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = `${doneCount} / 15`;
+    body.appendChild(meta);
+    const grid = document.createElement('div');
+    grid.className = 'lvlgrid';
+    for (let k=0; k<15; k++) {
+      const i = c*15 + k;
+      const b = document.createElement('button');
+      b.className = 'lvl' + (i < progress ? ' done' : '');
+      b.textContent = String(i+1);
+      b.disabled = i > progress;
+      b.onclick = () => openLevel(i);
+      grid.appendChild(b);
+    }
+    body.appendChild(grid);
+    sec.appendChild(body);
+    box.appendChild(sec);
+  });
+}
+
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => show(b.dataset.go));
+document.getElementById('btn-play').onclick = () => openLevel(progress);
+document.getElementById('back-game').onclick = () => show('scr-levels');
+document.getElementById('hint').onclick = () => { if (g && !won) hint(); };
+document.getElementById('next').onclick = () => { if (lvl < TOTAL-1) openLevel(lvl+1); else show('scr-levels'); };
+document.getElementById('win-next').onclick = () => { if (lvl < TOTAL-1) openLevel(lvl+1); else show('scr-levels'); };
+document.getElementById('win-retry').onclick = () => loadLevel(lvl);
+document.getElementById('zin').onclick = () => setZoom(zoom * 1.2);
+document.getElementById('zout').onclick = () => setZoom(zoom / 1.2);
+
+// ---------- Réglages ----------
+function applyLang(){
+  document.documentElement.lang = settings.lang;
+  document.title = t('title');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.getElementById('sel-lang').value = settings.lang;
+  renderLevels();
+  if (g) { updateGameLabels(); render(); }
+}
+document.getElementById('sel-lang').onchange = e => { settings.lang = e.target.value; saveSettings(); applyLang(); };
+const optSound = document.getElementById('opt-sound'), optMusic = document.getElementById('opt-music'), optVib = document.getElementById('opt-vib');
+optSound.onchange = () => { settings.sound = optSound.checked; saveSettings(); };
+optMusic.onchange = () => {
+  settings.music = optMusic.checked; saveSettings();
+  if (settings.music && musicChapter >= 0) playMusic(musicChapter); else stopMusic();
+};
+optVib.onchange = () => { settings.vib = optVib.checked; saveSettings(); };
+let resetArmed = false;
+document.getElementById('reset').onclick = function(){
+  if (!resetArmed) { this.textContent = t('confirm'); resetArmed = true; return; }
+  progress = 0; saveProgress();
+  resetArmed = false; this.textContent = t('resetBtn');
+  renderLevels();
+};
+
+// ---------- Démarrage ----------
+loadState();
+optSound.checked = settings.sound; optMusic.checked = settings.music; optVib.checked = settings.vib;
+initScene();
+applyLang();
+resize();
+show('scr-home');
+requestAnimationFrame(frame);
+</script>
